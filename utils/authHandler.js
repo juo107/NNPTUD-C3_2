@@ -1,5 +1,8 @@
 let userController = require('../controllers/users')
 let jwt = require('jsonwebtoken')
+let fs = require('fs');
+const path = require('path');
+const publicKey = fs.readFileSync(path.join(__dirname, '../public.key'));
 module.exports = {
     CheckLogin: async function (req, res, next) {
         try {
@@ -9,7 +12,7 @@ module.exports = {
                 return;
             }
             token = token.split(' ')[1]
-            let result = jwt.verify(token, 'secret');
+            let result = jwt.verify(token, publicKey, { algorithms: ['RS256'] });
             if (result.exp * 1000 < Date.now()) {
                 res.status(403).send({ message: "ban chua dang nhap" })
                 return;

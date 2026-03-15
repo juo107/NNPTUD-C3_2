@@ -52,5 +52,15 @@ module.exports = {
         body('role').isEmpty().withMessage("role khong duoc thay doi"),
         body('avatarUrl').optional().isArray().withMessage("avatarURl pahi la 1 mang"),
         body('avatarUrl.*').isURL().withMessage("URL khong hop le"),
+    ],
+    ChangepasswordValidator: [
+        body('oldpassword').notEmpty().withMessage('oldpassword khong duoc de trong'),
+        body('newpassword').notEmpty().withMessage('newpassword khong duoc de trong').bail().isStrongPassword({
+            minLength: 8,
+            minLowercase: 1,
+            minNumbers: 1,
+            minSymbols: 1,
+            minUppercase: 1
+        }).withMessage('newpassword phai co it nhat 8 ki tu trong do co it nhat 1 ki tu chu hoa, 1 ki tu chu thuong,1 ki tu so va 1 ki tu dac biet')
     ]
 }
