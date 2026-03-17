@@ -48,6 +48,28 @@ productSchema.pre('save', async function () {
         this.slug = this.slug + "-" + products.length
     }
 })
+
+const Inventory = require('./inventory');
+
+productSchema.post('save', async function(doc) {
+    // Tao inventory tuong ung khi tao moi product
+    try {
+        await Inventory.create({
+            product: doc._id,
+            stock: 0,
+            reserved: 0,
+            soldCount: 0
+        });
+        console.log(`Da tao inventory cho product ${doc._id}`);
+    } catch (err) {
+        if (err.code === 11000) {
+            console.warn(`Inventory cho product ${doc._id} da ton tai.`);
+        } else {
+            console.error(`Loi tao inventory cho product ${doc._id}:`, err);
+        }
+    }
+});
+
 module.exports = new mongoose.model(
     'product', productSchema
 )
